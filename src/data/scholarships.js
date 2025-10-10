@@ -110,7 +110,7 @@ export const scholarships = [
       "And this was India’s first competitive exam for 12th/ PU students to obtain a scholarship through their talent, here vedubuild not considering any income/ religion here vedubuild considering one nation one nationality for that vedubuild giving any opportunity for all students showcase their talent and encouraging them for further studies and giving Scholarship up to 2 years after 12th/ PUC.",
     ],
     requirements: [
-      "12th/PUC/10+2 (Current or 2018 passed)",
+      "12th/PUC/10+2 (Current or 2025 passed)",
       "Indian Citizenship",
       "Complete Registration",
     ],
@@ -130,7 +130,7 @@ export const scholarships = [
       "PLANT A TREE, PLANT A LIFE program to support green environment V-STAR give Plants",
     ],
     termAndConditions: [
-      "Participants shall be enrolled only for the current academic session, in the Class 12th / PU / 10+2, in pan India (Currently pursuing and 2018 passed out Students Only).",
+      "Participants shall be enrolled only for the current academic session, in the Class 12th / PU / 10+2, in pan India (Currently pursuing and 2025 passed out Students Only).",
 
       "The V-STAR exam can be attempted by students who are citizens of India and is open to students pan India colleges.",
 

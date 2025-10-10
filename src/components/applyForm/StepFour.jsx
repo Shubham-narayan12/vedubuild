@@ -4,12 +4,18 @@ import { CheckCircle, AlertCircle } from "lucide-react";
 import { scholarshipOptions } from "./constants";
 import { useTranslation } from "react-i18next";
 
-const StepFour = ({ formData }) => {
+const StepFour = ({ formData ,setFormData}) => {
   const { t } = useTranslation();
 
   const selectedScholarship = scholarshipOptions.find(
     (opt) => opt.value === formData.scholarship
   );
+
+  const fee = selectedScholarship?.fee || 0;
+
+   React.useEffect(() => {
+    setFormData((prev) => ({ ...prev, fee }));
+  }, [fee, setFormData]);
 
   return (
     <div className="space-y-6">
@@ -38,11 +44,15 @@ const StepFour = ({ formData }) => {
             <p className="font-semibold">{formData.emailId}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">{t("stepFour.studentClass")}</p>
+            <p className="text-sm text-gray-600">
+              {t("stepFour.studentClass")}
+            </p>
             <p className="font-semibold">{formData.studentClass}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-600">{t("stepFour.schoolCollege")}</p>
+            <p className="text-sm text-gray-600">
+              {t("stepFour.schoolCollege")}
+            </p>
             <p className="font-semibold">{formData.schoolCollege}</p>
           </div>
           <div>
@@ -63,7 +73,9 @@ const StepFour = ({ formData }) => {
           </div>
           {formData.combination && (
             <div>
-              <p className="text-sm text-gray-600">{t("stepFour.combination")}</p>
+              <p className="text-sm text-gray-600">
+                {t("stepFour.combination")}
+              </p>
               <p className="font-semibold">{formData.combination}</p>
             </div>
           )}
@@ -76,12 +88,14 @@ const StepFour = ({ formData }) => {
 
         {/* Program Section */}
         <div className="border-t pt-4">
-          <p className="text-sm text-gray-600">{t("stepFour.selectedProgram")}</p>
+          <p className="text-sm text-gray-600">
+            {t("stepFour.selectedProgram")}
+          </p>
           <p className="font-semibold text-[#FF6B00]">
             {selectedScholarship?.label}
           </p>
           <p className="text-sm text-gray-600 mt-1">
-            {t("stepFour.enrollmentFee")}: {selectedScholarship?.fee}
+            {t("stepFour.enrollmentFee")}: {fee}
           </p>
         </div>
       </div>

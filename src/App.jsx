@@ -19,6 +19,7 @@ import RefundPolicy from "./pages/RefundPolicy";
 import TermAndCondition from "./pages/TermAndCondition";
 import { Toaster } from "react-hot-toast";
 import StudentDashboard from "./pages/StudentDasboard";
+import PaymentPendingPage from "./components/applyForm/paymentPending";
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/scholarships" element={<ScholarshipPage />} />
+          <Route path="/payment-pending" element={<PaymentPendingPage/>} />
           <Route
             path="/scholarship/:id"
             element={<DetailedScholarshipPage />}

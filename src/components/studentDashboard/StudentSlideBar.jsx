@@ -141,7 +141,7 @@ export default function StudentScholarshipSidebar() {
           </div>
         </a>
 
-        <a href="/dashboard?tab=exam-schedule" className="block">
+        <a href="/student-dashboard?tab=student-examCalender" className="block">
           <div
             className={`flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100 group cursor-pointer ${
               isActiveTab("exam-schedule") ? "bg-green-200" : ""
@@ -152,7 +152,7 @@ export default function StudentScholarshipSidebar() {
           </div>
         </a>
 
-        <a href="/dashboard?tab=certificate" className="block">
+        <a href="/student-dashboard?tab=student-certificate" className="block">
           <div
             className={`flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100 group cursor-pointer ${
               isActiveTab("certificate") ? "bg-green-200" : ""
@@ -163,7 +163,7 @@ export default function StudentScholarshipSidebar() {
           </div>
         </a>
 
-        <a href="/dashboard?tab=admit-card" className="block">
+        <a href="/student-dashboard?tab=student-admitCard" className="block">
           <div
             className={`flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100 group cursor-pointer ${
               isActiveTab("admit-card") ? "bg-green-200" : ""
@@ -173,7 +173,7 @@ export default function StudentScholarshipSidebar() {
             <span className="ml-3 text-sm font-medium">Admit Card</span>
           </div>
         </a>
-        <a href="/dashboard?tab=result" className="block">
+        <a href="/student-dashboard?tab=student-result" className="block">
           <div
             className={`flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100 group cursor-pointer ${
               isActiveTab("result") ? "bg-green-200" : ""

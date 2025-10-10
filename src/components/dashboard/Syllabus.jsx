@@ -2,10 +2,31 @@ import React, { useState, useEffect } from "react";
 import { syllabusUpload, getAllSyllabus } from "../../api/authApi";
 import toast from "react-hot-toast";
 
+const combinationOptions = {
+  Arts: [
+    "History, Economics, Political Science",
+    "History, Economics, Sociology",
+    "History, Psychology, Sociology",
+    "Other Arts Combination",
+  ],
+  Commerce: [
+    "Accountancy, Business Studies, Economics",
+    "Accountancy, Business Studies, Computer Science",
+    "Other Commerce Combination",
+  ],
+  Science: [
+    "Physics, Chemistry, Mathematics",
+    "Physics, Chemistry, Biology",
+    "Physics, Chemistry, Computer Science",
+    "Other Science Combination",
+  ],
+};
+
 const Syllabus = () => {
   const [selectedPdf, setSelectedPdf] = useState(null);
   const [studentClass, setStudentClass] = useState("");
   const [scholarship, setScholarship] = useState("");
+  const [combination, setCombination] = useState("");
   const [loading, setLoading] = useState(false);
   const [syllabusList, setSyllabusList] = useState([]);
 
@@ -30,6 +51,17 @@ const Syllabus = () => {
     };
   }, []);
 
+  // Reset studentClass and combination when scholarship changes
+  useEffect(() => {
+    setStudentClass("");
+    setCombination("");
+  }, [scholarship]);
+
+  // Reset combination when studentClass changes
+  useEffect(() => {
+    setCombination("");
+  }, [studentClass]);
+
   const handlePdfChange = (e) => {
     const file = e.target.files[0];
     if (file && file.type === "application/pdf") {
@@ -40,8 +72,12 @@ const Syllabus = () => {
   };
 
   const handleUploadSyllabus = async () => {
-    if (!studentClass || !selectedPdf || !scholarship) {
-      alert("Please enter all fields and select a PDF file!");
+    if (!studentClass || !scholarship || !selectedPdf) {
+      alert("Please enter all required fields and select a PDF file!");
+      return;
+    }
+    if (scholarship === "V-STAR" && !combination) {
+      alert("Please select a subject combination!");
       return;
     }
 
@@ -52,11 +88,15 @@ const Syllabus = () => {
       formData.append("studentClass", studentClass);
       formData.append("scholarship", scholarship);
       formData.append("file", selectedPdf);
+      if (scholarship === "V-STAR") {
+        formData.append("combination", combination);
+      }
 
       let res = await syllabusUpload(formData);
       toast.success("Syllabus uploaded successfully!");
       setStudentClass("");
       setScholarship("");
+      setCombination("");
       setSelectedPdf(null);
 
       res = await getAllSyllabus();
@@ -69,34 +109,28 @@ const Syllabus = () => {
     }
   };
 
+  // Define class options based on scholarship
+  const classOptions = scholarship === "VEES"
+    ? ["5th", "6th", "7th", "8th", "9th", "10th"]
+    : scholarship === "V-STAR"
+    ? ["12th/PUC - Arts", "12th/PUC - Commerce", "12th/PUC - Science"]
+    : [];
+
+  // Define combination options based on studentClass
+  const getCombinationOptions = () => {
+    if (scholarship !== "V-STAR") return [];
+    if (studentClass === "12th/PUC - Arts") return combinationOptions.Arts;
+    if (studentClass === "12th/PUC - Commerce") return combinationOptions.Commerce;
+    if (studentClass === "12th/PUC - Science") return combinationOptions.Science;
+    return [];
+  };
+
   return (
     <div>
       <div className="w-full max-w-md mx-auto p-4 mt-8 border rounded-md shadow-sm bg-white">
         <h2 className="text-xl font-semibold mb-4 text-center">
           Upload Syllabus
         </h2>
-
-        {/* Student Class Dropdown */}
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Student Class
-        </label>
-        <select
-          value={studentClass}
-          onChange={(e) => setStudentClass(e.target.value)}
-          className="w-full mb-4 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF6B00]"
-        >
-          <option value="">-- Select Class --</option>
-
-          <option value="5th">5th</option>
-          <option value="6th">6th</option>
-          <option value="7th">7th</option>
-          <option value="8th">8th</option>
-          <option value="9th">9th</option>
-          <option value="10th">10th</option>
-          <option value="12th/PUC - Arts">12th/PUC - Arts</option>
-          <option value="12th/PUC - Commerce">12th/PUC - Commerce</option>
-          <option value="12th/PUC - Science">12th/PUC - Science</option>
-        </select>
 
         {/* Scholarship Dropdown */}
         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -112,6 +146,46 @@ const Syllabus = () => {
           <option value="V-STAR">V-STAR</option>
         </select>
 
+        {/* Student Class Dropdown */}
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Student Class
+        </label>
+        <select
+          value={studentClass}
+          onChange={(e) => setStudentClass(e.target.value)}
+          className="w-full mb-4 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF6B00]"
+          disabled={!scholarship}
+        >
+          <option value="">-- Select Class --</option>
+          {classOptions.map((cls) => (
+            <option key={cls} value={cls}>
+              {cls}
+            </option>
+          ))}
+        </select>
+
+        {/* Combination Dropdown (only for V-STAR) */}
+        {scholarship === "V-STAR" && studentClass && (
+          <>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Subject Combination
+            </label>
+            <select
+              value={combination}
+              onChange={(e) => setCombination(e.target.value)}
+              className="w-full mb-4 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF6B00]"
+              disabled={!studentClass}
+            >
+              <option value="">-- Select Combination --</option>
+              {getCombinationOptions().map((comb) => (
+                <option key={comb} value={comb}>
+                  {comb}
+                </option>
+              ))}
+            </select>
+          </>
+        )}
+
         {/* PDF Upload */}
         <input
           type="file"
@@ -126,7 +200,7 @@ const Syllabus = () => {
 
         {/* Selected File Info */}
         {selectedPdf && (
-          <div className="mt-4 text-sm text-gray-700">
+          <div className="mt-4 text-sm text-gray-600">
             <p className="mb-1">
               📄 File Selected: <b>{selectedPdf.name}</b>
             </p>
@@ -170,6 +244,11 @@ const Syllabus = () => {
                 <p className="text-sm text-gray-600">
                   Scholarship: {item.scholarship}
                 </p>
+                {item.combination && (
+                  <p className="text-sm text-gray-600">
+                    Combination: {item.combination}
+                  </p>
+                )}
               </div>
               <a
                 href={item.fileUrl}

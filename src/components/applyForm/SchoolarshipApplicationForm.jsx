@@ -89,7 +89,7 @@ export default function ScholarshipApplicationForm() {
           />
         );
       case 4:
-        return <StepFour formData={formData} />;
+        return <StepFour formData={formData} setFormData={setFormData} />;
       default:
         return null;
     }

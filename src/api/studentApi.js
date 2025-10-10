@@ -33,9 +33,7 @@ export const verifyEmailOtp = (data) => {
 };
 
 export const addStudentData = (data) => {
-  return axiosInstance.post("/vedubuildApply/apply", data, {
-    responseType: "blob",
-  });
+  return axiosInstance.post("/vedubuildApply/apply", data);
 };
 
 export const getAllStudentData = () => {
@@ -70,6 +68,15 @@ export const resetStudentPassword = (formData) => {
   });
 };
 
-export const totalStudents = ()=>{
-  return axiosInstance.get("/vedubuildApply/total-students")
+export const totalStudents = () => {
+  return axiosInstance.get("/vedubuildApply/total-students");
+};
+
+
+export const sendCredentials = (studentId)=>{
+  return axiosInstance.post(`/vedubuildApply/${studentId}/send-credentials`)
+};
+
+export const updatePaymentStatus = (id)=>{
+  return axiosInstance.post(`/vedubuildApply/update-payment-status/${id}`)
 }

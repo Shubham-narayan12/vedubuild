@@ -2,7 +2,11 @@
 import React from "react";
 import { Award, AlertCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { scholarshipOptions, classOptions, combinationOptions } from "./constants";
+import {
+  scholarshipOptions,
+  classOptions,
+  combinationOptions,
+} from "./constants";
 
 const StepThree = ({ formData, errors, handleInputChange }) => {
   const { t } = useTranslation();
@@ -84,7 +88,9 @@ const StepThree = ({ formData, errors, handleInputChange }) => {
               </label>
               <select
                 value={formData.studentClass}
-                onChange={(e) => handleInputChange("studentClass", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("studentClass", e.target.value)
+                }
                 className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent ${
                   errors.class ? "border-red-500" : "border-gray-300"
                 }`}
@@ -114,7 +120,9 @@ const StepThree = ({ formData, errors, handleInputChange }) => {
                 </label>
                 <select
                   value={formData.combination}
-                  onChange={(e) => handleInputChange("combination", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("combination", e.target.value)
+                  }
                   className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent ${
                     errors.combination ? "border-red-500" : "border-gray-300"
                   }`}
@@ -122,18 +130,24 @@ const StepThree = ({ formData, errors, handleInputChange }) => {
                   <option value="">
                     {t("stepThree.combinationPlaceholder")}
                   </option>
-                  {Object.entries(combinationOptions).map(
-                    ([stream, combinations]) => (
-                      <optgroup key={stream} label={stream}>
-                        {combinations.map((combo) => (
-                          <option key={combo} value={combo}>
-                            {combo}
-                          </option>
-                        ))}
-                      </optgroup>
-                    )
-                  )}
+
+                  {/* ✅ Only show combinations based on selected stream */}
+                  {(() => {
+                    let stream = "";
+                    if (formData.studentClass.includes("Arts")) stream = "Arts";
+                    else if (formData.studentClass.includes("Commerce"))
+                      stream = "Commerce";
+                    else if (formData.studentClass.includes("Science"))
+                      stream = "Science";
+
+                    return combinationOptions[stream]?.map((combo) => (
+                      <option key={combo} value={combo}>
+                        {combo}
+                      </option>
+                    ));
+                  })()}
                 </select>
+
                 {errors.combination && (
                   <p className="mt-1 text-sm text-red-600 flex items-center">
                     <AlertCircle className="h-4 w-4 mr-1" />

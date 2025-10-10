@@ -1,6 +1,11 @@
 import { Download, Upload } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
-import { applyBulk, getAllStudentData } from "../../api/studentApi";
+import {
+  applyBulk,
+  getAllStudentData,
+  updatePaymentStatus,
+  sendCredentials
+} from "../../api/studentApi";
 
 // import { downloadStudentData, applyBulk } from "../../api/studentApi";
 
@@ -13,6 +18,7 @@ export default function StudentCardTable() {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [studentIdToDelete, setStudentIdToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [filters, setFilters] = useState({
     scholarship: "all",
     schoolCollege: "all",
@@ -24,110 +30,43 @@ export default function StudentCardTable() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedClass, setSelectedClass] = useState(null);
   const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAllStudentData()
-      .then((res) => {
-        console.log("Fetched students:", res.data.students); // ← ye check karne ke liye
-        console.log("Filtered Students:", filteredStudents);
+    const fetchStudents = async () => {
+      try {
+        setLoading(true);
+        const res = await getAllStudentData();
         setStudents(res.data.students);
-      })
-      .catch((err) => {
-        console.error("Error fetching students:", err);
-      });
+      } catch (error) {
+        console.error("Error fetching students:", error);
+        toast.error("Failed to fetch student data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
   }, []);
-  const sampleStudents = [
-    {
-      _id: "1",
-      studentName: "Aman Kumar",
-      mobileNo: "9876543210",
-      emailId: "aman@example.com",
-      class: "12th",
-      schoolCollege: "ABC Public School",
-      aadharNo: "1234-5678-9012",
-      address: "123 Main Street",
-      city: "Delhi",
-      state: "New Delhi",
-      pinCode: "110001",
-      combination: "PCM",
-      scholarship: "Merit-based",
-    },
-    {
-      _id: "2",
-      studentName: "Priya Sharma",
-      mobileNo: "9123456789",
-      emailId: "priya@example.com",
-      class: "11th",
-      schoolCollege: "XYZ International School",
-      aadharNo: "2345-6789-0123",
-      address: "456 Park Avenue",
-      city: "Mumbai",
-      state: "Maharashtra",
-      pinCode: "400001",
-      combination: "PCB",
-      scholarship: "Need-based",
-    },
-    {
-      _id: "3",
-      studentName: "Rahul Singh",
-      mobileNo: "9234567890",
-      emailId: "rahul@example.com",
-      class: "12th",
-      schoolCollege: "Delhi Public School",
-      aadharNo: "3456-7890-1234",
-      address: "789 Green Street",
-      city: "Bangalore",
-      state: "Karnataka",
-      pinCode: "560001",
-      combination: "Commerce",
-      scholarship: "Sports",
-    },
-    {
-      _id: "4",
-      studentName: "Anita Patel",
-      mobileNo: "9345678901",
-      emailId: "anita@example.com",
-      class: "10th",
-      schoolCollege: "ABC Public School",
-      aadharNo: "4567-8901-2345",
-      address: "321 Blue Lane",
-      city: "Pune",
-      state: "Maharashtra",
-      pinCode: "411001",
-      combination: "Arts",
-      scholarship: "Merit-based",
-    },
-    {
-      _id: "5",
-      studentName: "Vikash Yadav",
-      mobileNo: "9456789012",
-      emailId: "vikash@example.com",
-      class: "11th",
-      schoolCollege: "Modern College",
-      aadharNo: "5678-9012-3456",
-      address: "654 Red Road",
-      city: "Chennai",
-      state: "Tamil Nadu",
-      pinCode: "600001",
-      combination: "PCM",
-      scholarship: "None",
-    },
-    {
-      _id: "6",
-      studentName: "Sneha Gupta",
-      mobileNo: "9567890123",
-      emailId: "sneha@example.com",
-      class: "12th",
-      schoolCollege: "St. Mary's School",
-      aadharNo: "6789-0123-4567",
-      address: "987 Yellow Street",
-      city: "Kolkata",
-      state: "West Bengal",
-      pinCode: "700001",
-      combination: "PCB",
-      scholarship: "Merit-based",
-    },
-  ];
+
+  const handleUpdatePaymentStatus = async (id) => {
+    try {
+      const res = await updatePaymentStatus(id);
+
+      if (res.data.success) {
+        toast.success("Payment status updated to success ✅");
+        await sendCredentials(id);
+        // ✅ Re-fetch and update state
+        const updatedData = await getAllStudentData();
+        setStudents(updatedData.data.students);
+      } else {
+        toast.error(res.data.message || "Unable to update payment status ❌");
+      }
+    } catch (error) {
+      console.error("Error updating payment status:", error);
+      toast.error("Something went wrong while updating payment status!");
+    }
+  };
 
   // Get unique values for filter options
   const filterOptions = useMemo(() => {
@@ -143,11 +82,16 @@ export default function StudentCardTable() {
   // Filter students based on search and filters
   const filteredStudents = useMemo(() => {
     return students.filter((student) => {
+      if (!student) return false;
+
+      const search = searchTerm.trim().toLowerCase();
+
       const matchesSearch =
-        searchTerm === "" ||
-        student.studentName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        student.mobileNo?.includes(searchTerm) ||
-        student.emailId?.toLowerCase().includes(searchTerm.toLowerCase());
+        search === "" ||
+        student.studentName?.toLowerCase().includes(search) ||
+        student.emailId?.toLowerCase().includes(search) ||
+        student.mobileNo?.toString().includes(search) ||
+        student.aplication_id?.toString().toLowerCase().includes(search); // Added aplication_id search
 
       const matchesScholarship =
         filters.scholarship === "all" ||
@@ -159,13 +103,13 @@ export default function StudentCardTable() {
 
       const matchesClass =
         filters.studentClass === "all" ||
-        student.studentClass === filters.studentClass; // ✅
+        student.studentClass === filters.studentClass;
 
       const matchesCity =
         filters.city === "all" || student.city === filters.city;
 
-      const matchesState =
-        filters.district === "all" || student.district === filters.district; // ✅
+      const matchesDistrict =
+        filters.district === "all" || student.district === filters.district;
 
       return (
         matchesSearch &&
@@ -173,7 +117,7 @@ export default function StudentCardTable() {
         matchesSchool &&
         matchesClass &&
         matchesCity &&
-        matchesState
+        matchesDistrict
       );
     });
   }, [searchTerm, filters, students]);
@@ -187,6 +131,11 @@ export default function StudentCardTable() {
     e.stopPropagation();
     setStudentIdToDelete(id);
     setShowDeleteModal(true);
+  };
+  const handlePaymentClick = (student, e) => {
+    e.stopPropagation();
+    setSelectedStudent(student);
+    setShowPaymentModal(true);
   };
 
   const confirmDelete = () => {
@@ -218,19 +167,6 @@ export default function StudentCardTable() {
       "_blank"
     );
   };
-
-  // useEffect(() => {
-  //   const fetchStudents = async () => {
-  //     try {
-  //       const res = await getAllStudentData();
-  //       setStudents(res.data.students);
-  //     } catch (error) {
-  //       console.error(err);
-  //       toast.error("Failed to fetch enquiries");
-  //     }
-  //   };
-  //   fetchStudents();
-  // }, []);
 
   return (
     <div className="p-4 w-full">
@@ -314,8 +250,8 @@ export default function StudentCardTable() {
         <div className="flex justify-between items-center">
           <input
             type="text"
-            placeholder="Search by name, mobile, or email..."
-            className="border border-gray-300 w-[300px] rounded-md py-2 px-4"
+            placeholder="Search by application_id, name, mobile, or email..."
+            className="border border-gray-300 w-[400px] rounded-md py-2 px-4"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -403,93 +339,117 @@ export default function StudentCardTable() {
       </div>
       {/* Table with horizontal scroll */}
       <div className="overflow-x-auto border border-gray-200 rounded-lg">
-        <table className="min-w-full table-auto text-left border-collapse">
-          <thead className="bg-orange-200">
-            <tr>
-              <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
-                Name
-              </th>
-              <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
-                Mobile
-              </th>
-              <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
-                Email
-              </th>
-              <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
-                Class
-              </th>
-              <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
-                School/College
-              </th>
-              <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
-                Aadhar No
-              </th>
-              <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
-                Address
-              </th>
-              <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
-                City
-              </th>
-              <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
-                State
-              </th>
-              <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
-                Pin Code
-              </th>
-              <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
-                Combination
-              </th>
-              <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
-                Scholarship
-              </th>
-              <th className="px-4 py-3 text-sm font-medium text-gray-600 text-center whitespace-nowrap">
-                Action
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {filteredStudents.map((student) => (
-              <tr
-                key={student._id}
-                onClick={() => handleRowClick(student)}
-                className="bg-white cursor-pointer hover:bg-gray-50 transition-colors"
-              >
-                <td className="px-4 py-3 text-sm whitespace-nowrap">
-                  {student.studentName}
-                </td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">
-                  {student.mobileNo}
-                </td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">
-                  {student.emailId}
-                </td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">
-                  {student.studentClass}
-                </td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">
-                  {student.schoolCollege}
-                </td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">
-                  {student.aadharNo}
-                </td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">
-                  {student.address}
-                </td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">
-                  {student.city}
-                </td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">
-                  {student.district}
-                </td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">
-                  {student.pinCode}
-                </td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">
-                  {student.combination}
-                </td>
-                <td className="px-4 py-3 text-sm whitespace-nowrap">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs ${
+        {loading ? (
+          <div className="flex justify-center items-center py-10 text-gray-600">
+            Loading student data...
+          </div>
+        ) : (
+          <table className="min-w-full table-auto text-left border-collapse">
+            <thead className="bg-orange-200">
+              <tr>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  Application Id
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  Name
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  Mobile
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  Email
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  Class
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  School/College
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  Board
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  Aadhar No
+                </th>
+
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  Address
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  City
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  State
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  Pin Code
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  Combination
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  Scholarship
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  Payment Status
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 text-center whitespace-nowrap">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {filteredStudents.map((student) => (
+                <tr
+                  key={student._id}
+                  onClick={() => handleRowClick(student)}
+                  className="bg-white cursor-pointer hover:bg-gray-50 transition-colors duration-150"
+                >
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                    {student.aplication_id}
+                  </td>
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                    {student.studentName}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                    {student.mobileNo}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                    {student.emailId}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                    {student.studentClass}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                    {student.schoolCollege}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                    {student.boardName}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                    {student.aadharNo}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                    {student.address}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                    {student.city}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                    {student.district}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                    {student.pinCode}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
+                    {student.combination}
+                  </td>
+
+                  {/* 🎓 Scholarship Badge */}
+                  <td className="px-4 py-3 text-sm whitespace-nowrap">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium
+                    ${
                       student.scholarship === "Merit-based"
                         ? "bg-green-100 text-green-800"
                         : student.scholarship === "Need-based"
@@ -498,33 +458,101 @@ export default function StudentCardTable() {
                         ? "bg-purple-100 text-purple-800"
                         : "bg-gray-100 text-gray-800"
                     }`}
+                    >
+                      {student.scholarship}
+                    </span>
+                  </td>
+
+                  {/* 💳 Payment Status Badge */}
+                  <td className="px-4 py-3 text-sm text-center whitespace-nowrap">
+                    {student.paymentStatus === "Pending" ? (
+                      <button
+                        onClick={(e) => handlePaymentClick(student, e)}
+                        className="inline-flex items-center px-2 py-1 text-xs font-medium 
+                                 text-yellow-800 hover:text-yellow-900 hover:bg-yellow-100 
+                                 rounded transition-colors"
+                      >
+                        {student.paymentStatus}
+                      </button>
+                    ) : (
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium
+                        ${
+                          student.paymentStatus === "Success"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {student.paymentStatus}
+                      </span>
+                    )}
+                  </td>
+
+                  {/* 🗑 Delete Button */}
+                  <td className="px-4 py-3 text-sm text-center whitespace-nowrap">
+                    <button
+                      onClick={(e) => handleDeleteClick(student._id, e)}
+                      className="inline-flex items-center px-2 py-1 text-xs font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+
+              {/* Empty state */}
+              {filteredStudents.length === 0 && (
+                <tr>
+                  <td
+                    colSpan="13"
+                    className="px-4 py-8 text-center text-gray-500 text-sm"
                   >
-                    {student.scholarship}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-sm text-center whitespace-nowrap">
-                  <button
-                    onClick={(e) => handleDeleteClick(student._id, e)}
-                    className="text-red-500 hover:text-red-700 hover:underline font-medium"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {filteredStudents.length === 0 && (
-              <tr>
-                <td
-                  colSpan="13"
-                  className="px-4 py-8 text-center text-gray-500"
-                >
-                  No students found matching your criteria.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                    No students found matching your criteria.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        )}
       </div>
+
+      {/* Payment Status Change Modal  */}
+      {showPaymentModal && selectedStudent && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+            <h3 className="text-lg font-semibold mb-4">
+              Update Payment Status for {selectedStudent.studentName}
+            </h3>
+            <div className="space-y-3">
+              <p className="text-sm text-gray-700">
+                Current Status:{" "}
+                <span className="text-yellow-600 font-semibold">
+                  {selectedStudent.paymentStatus}
+                </span>
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={async () => {
+                    await handleUpdatePaymentStatus(selectedStudent._id);
+                    setShowPaymentModal(false);
+                  }}
+                  className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                >
+                  Mark Success
+                </button>
+              </div>
+            </div>
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => setShowPaymentModal(false)}
+                className="bg-gray-300 px-4 py-2 rounded-md hover:bg-gray-400"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Student Details Modal */}
       {showDetailsModal && selectedStudent && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
@@ -544,7 +572,13 @@ export default function StudentCardTable() {
                 <strong>Class:</strong> {selectedStudent.studentClass}
               </p>
               <p>
+                <strong>Combination:</strong> {selectedStudent.combination}
+              </p>
+              <p>
                 <strong>School/College:</strong> {selectedStudent.schoolCollege}
+              </p>
+              <p>
+                <strong>Board</strong> {selectedStudent.boardName}
               </p>
               <p>
                 <strong>Aadhar:</strong> {selectedStudent.aadharNo}
@@ -561,11 +595,23 @@ export default function StudentCardTable() {
               <p>
                 <strong>Pin Code:</strong> {selectedStudent.pinCode}
               </p>
-              <p>
-                <strong>Combination:</strong> {selectedStudent.combination}
-              </p>
+
               <p>
                 <strong>Scholarship:</strong> {selectedStudent.scholarship}
+              </p>
+              <p>
+                <strong>Payment Status:</strong>{" "}
+                <span
+                  className={
+                    selectedStudent.paymentStatus === "Success"
+                      ? "text-green-600 font-semibold"
+                      : selectedStudent.paymentStatus === "Pending"
+                      ? "text-red-600 font-semibold"
+                      : "text-gray-600"
+                  }
+                >
+                  {selectedStudent.paymentStatus}
+                </span>
               </p>
             </div>
             <div className="flex justify-end mt-6">

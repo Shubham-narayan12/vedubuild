@@ -9,7 +9,7 @@ export const scholarshipOptions = [
   {
     value: "vstar",
     label: "V-STAR - Vedubuild Standard Test for Award & Rewards",
-    fee: "₹499",
+    fee:   "₹499",
     target: "12th/PUC",
   },
 ];

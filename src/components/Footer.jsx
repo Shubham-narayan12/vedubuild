@@ -10,6 +10,8 @@ import {
 import React from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { studentLogout } from "../api/studentApi";
+import toast from "react-hot-toast";
 
 export const Footer = () => {
   const { t } = useTranslation();
@@ -120,29 +122,28 @@ export const Footer = () => {
               {t("footer.support.title")}
             </h4>
             <ul className="space-y-2 text-gray-100">
-              {/*
               <li>
                 <a href="#" className="hover:text-amber-600 transition">
                   {t("footer.support.faq")}
                 </a>
-              </li> 8 */}
+              </li>
               <li>
                 <a href="/contact" className="hover:text-amber-600 transition">
                   {t("footer.support.contact")}
                 </a>
               </li>
-              {/*
+
               <li>
                 <a href="#" className="hover:text-amber-600 transition">
                   {t("footer.support.help")}
                 </a>
-              </li> */}
-              {/*
+              </li>
+
               <li>
                 <a href="#" className="hover:text-amber-600 transition">
                   {t("footer.support.resources")}
                 </a>
-              </li> */}
+              </li>
             </ul>
           </div>
 

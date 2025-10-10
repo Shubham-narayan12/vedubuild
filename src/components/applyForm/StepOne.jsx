@@ -1,6 +1,13 @@
 // StepOne.js
 import React, { useState } from "react";
-import { User, Phone, Mail, MapPin, AlertCircle } from "lucide-react";
+import {
+  User,
+  Phone,
+  Mail,
+  MapPin,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 import {
   sendPhoneOtp,
   sendEmailOtp,
@@ -14,6 +21,8 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
   const { t } = useTranslation();
   const [showPhoneOtpField, setPhoneShowOtpField] = useState(false);
   const [showEmailOtpField, setPhoneEmailOtpField] = useState(false);
+  const [showPhoneVerified, setShowPhoneVerified] = useState(false);
+  const [showEmailVerified, setShowEmailVerified] = useState(false);
 
   // Send Phone OTP
   const handleSendOtp = async () => {
@@ -59,6 +68,7 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
       toast.success("Verified Phone!");
       handleInputChange("isPhoneVerified", true);
       setPhoneShowOtpField(false);
+      setShowPhoneVerified(true);
     } catch {
       toast.error("Failed to verify OTP. Please try again.");
     }
@@ -78,6 +88,7 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
       toast.success("Verified Email!");
       handleInputChange("isEmailVerified", true);
       setPhoneEmailOtpField(false);
+      setShowEmailVerified(true);
     } catch (error) {
       if (error.response && error.response.status === 409) {
         toast.error(error.response.data.message);
@@ -142,13 +153,20 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
                 placeholder={t("stepOne.mobileNo.placeholder")}
                 maxLength="10"
               />
-              <button
-                type="button"
-                onClick={handleSendOtp}
-                className="absolute right-2 px-3 py-1 bg-[#FF6B00] text-white cursor-pointer text-sm rounded-lg hover:bg-orange-600"
-              >
-                {t("stepOne.mobileNo.sendOtp")}
-              </button>
+              {showPhoneVerified ? (
+                <div className="absolute right-3 flex items-center gap-1 text-green-600">
+                  <CheckCircle className="h-5 w-5" />
+                  <span className="text-sm font-medium">Verified</span>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSendOtp}
+                  className="absolute right-2 px-3 py-1 bg-[#FF6B00] text-white cursor-pointer text-sm rounded-lg hover:bg-orange-600"
+                >
+                  Send OTP
+                </button>
+              )}
             </div>
 
             {/* Phone OTP */}
@@ -205,26 +223,35 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
               }`}
               placeholder={t("stepOne.emailId.placeholder")}
             />
-            <button
-              type="button"
-              onClick={handleSendEmailOtp}
-              className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 cursor-pointer bg-[#FF6B00] text-white text-sm rounded-lg hover:bg-orange-600"
-            >
-              {t("stepOne.emailId.sendOtp")}
-            </button>
+            {showEmailVerified ? (
+              <div className="absolute right-3 flex items-center gap-1 text-green-600">
+                <CheckCircle className="h-5 w-5" />
+                <span className="text-sm font-medium">Verified</span>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handleSendEmailOtp}
+                className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 cursor-pointer bg-[#FF6B00] text-white text-sm rounded-lg hover:bg-orange-600"
+              >
+                Send OTP
+              </button>
+            )}
           </div>
 
           {/* Email OTP */}
           {showEmailOtpField && (
             <div className="mt-3 flex items-center gap-3">
-              <div className="flex-1">
+              <div className="w-1/2">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {t("stepOne.emailId.otpLabel")}
                 </label>
                 <input
                   type="text"
                   value={formData.emailOtp}
-                  onChange={(e) => handleInputChange("emailOtp", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("emailOtp", e.target.value)
+                  }
                   className="w-full px-3 py-3 border rounded-lg focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent"
                   placeholder={t("stepOne.emailId.otpPlaceholder")}
                   maxLength="6"

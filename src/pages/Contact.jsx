@@ -68,7 +68,7 @@ export const Contact = () => {
                                 </div>
                                 <div className="flex items-center space-x-3">
                                     <PhoneIncoming className="h-6 w-6 text-blue-500" />
-                                    <span>+91 88842 62115</span>
+                                    <span>+91 63669 79913</span>
                                 </div>
                                 <div className="flex items-center space-x-3">
                                     <MapPinCheck className="h-6 w-6 text-blue-500" />
