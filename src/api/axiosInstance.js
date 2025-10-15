@@ -3,7 +3,7 @@ import axios from "axios";
 const axiosInstance = axios.create({
   //"https://api.vedubuild.org/api",
 
-  baseURL: import.meta.env.VITE_LOCAL_API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
 });
 
