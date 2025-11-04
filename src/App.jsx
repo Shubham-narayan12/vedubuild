@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import { About } from "./pages/About";
 import { Contact } from "./pages/Contact";
+
 import NotFound from "./pages/NotFound";
 import DetailedScholarshipPage from "./pages/ScholarshipDetail";
 import { ScholarshipPage } from "./pages/ScholarshipPage";
@@ -20,7 +21,7 @@ import TermAndCondition from "./pages/TermAndCondition";
 import { Toaster } from "react-hot-toast";
 import StudentDashboard from "./pages/StudentDasboard";
 import PaymentPendingPage from "./components/applyForm/paymentPending";
-
+import EventPage from "./pages/EventPage";
 
 function App() {
   return (
@@ -36,32 +37,14 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/scholarships" element={<ScholarshipPage />} />
-          <Route path="/payment-pending" element={<PaymentPendingPage/>} />
+          <Route path="/payment-pending" element={<PaymentPendingPage />} />
           <Route
             path="/scholarship/:id"
             element={<DetailedScholarshipPage />}
           />
           <Route path="/apply" element={<ScholarshipApplicationForm />} />
-          <Route
-            path="/partners"
-            element={
-              <div className="flex justify-center items-center h-screen">
-                <h1 className="text-8xl font-bold text-[#3B3B3B] mt-2">
-                  Coming Soon
-                </h1>
-              </div>
-            }
-          />
-          <Route
-            path="/events"
-            element={
-              <div className="flex justify-center items-center h-screen">
-                <h1 className="text-8xl font-bold text-[#3B3B3B] mt-2">
-                  Coming Soon
-                </h1>
-              </div>
-            }
-          />
+          <Route path="/partners" element={<PartnerPage />} />
+          <Route path="/events" element={<EventPage />} />
           <Route path="/privacy-policy" element={<Privacy_Policy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/terms-and-conditions" element={<TermAndCondition />} />

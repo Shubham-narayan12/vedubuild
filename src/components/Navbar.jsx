@@ -26,8 +26,7 @@ export default function Navbar() {
     { label: t("navbar.home"), path: "/" },
     { label: t("navbar.about"), path: "/about" },
     { label: t("navbar.scholarships"), path: "/scholarships" },
-    { label: t("navbar.partners"), path: "/partners" }, 
-     { label: t("navbar.events"), path: "/events" }, 
+    { label: t("navbar.partners"), path: "/partners" },
     { label: t("navbar.contact"), path: "/contact" },
   ];
 
@@ -54,6 +53,10 @@ export default function Navbar() {
     }
   };
 
+  const handleLogoClick = () => {
+    navigate("/"); // Home page pe navigate karega
+  };
+
   // TRANSLATION
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -69,7 +72,8 @@ export default function Navbar() {
               <img
                 src="/img/partners/VRSDCLOGO.png"
                 alt="Vedubuild Logo"
-                className="h-12 w-auto object-contain"
+                className="h-14 w-auto object-contain cursor-pointer" // cursor-pointer add kiya
+                onClick={handleLogoClick} // Click handler add kiya
               />
 
               {/* 🔽 Language Dropdown instead of EN/HI buttons */}

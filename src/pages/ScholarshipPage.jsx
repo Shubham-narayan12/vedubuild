@@ -59,12 +59,7 @@ export const ScholarshipPage = () => {
                     ))}
                 </div>
 
-                <div className="text-center mt-12">
-                    <button className="border border-[#3B3B3B] text-[#3B3B3B] hover:bg-[#f3f3f3] px-8 py-3 rounded-md text-lg font-medium transition-colors flex items-center mx-auto">
-                        load more
-                        <ChevronRight className="ml-2 h-5 w-5" />
-                    </button>
-                </div>
+                
             </div>
         </section>
     )
