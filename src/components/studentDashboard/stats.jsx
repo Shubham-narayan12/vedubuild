@@ -26,17 +26,20 @@ export default function ProfileStats() {
   const fields = [
     { label: "Application ID", value: studentData.application_id, icon: IdCard },
     { label: "Student Name", value: studentData.studentName, icon: User },
+    { label: "Father Name", value: studentData.fatherName, icon: User },
     { label: "Mobile No", value: studentData.mobileNo, icon: Phone },
     { label: "Email ID", value: studentData.emailId, icon: Mail },
     { label: "Address", value: studentData.address, icon: Home },
     { label: "City", value: studentData.city, icon: MapPin },
     { label: "District", value: studentData.district, icon: MapPin },
     { label: "Pin Code", value: studentData.pinCode, icon: MapPin },
+    
     {
       label: "School / College",
       value: studentData.schoolCollege,
       icon: BookOpen,
     },
+    { label: "Board", value: studentData.boardName, icon: Award },
     { label: "Scholarship", value: studentData.scholarship, icon: Award },
     { label: "Class", value: studentData.studentClass, icon: BookOpen },
     { label: "Combination", value: studentData.combination, icon: BookOpen },

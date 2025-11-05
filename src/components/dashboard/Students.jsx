@@ -354,6 +354,9 @@ export default function StudentCardTable() {
                   Name
                 </th>
                 <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
+                  Father Name
+                </th>
+                <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
                   Mobile
                 </th>
                 <th className="px-4 py-3 text-sm font-medium text-gray-600 whitespace-nowrap">
@@ -410,6 +413,9 @@ export default function StudentCardTable() {
                   </td>
                   <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
                     {student.studentName}
+                  </td>
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                    {student.fatherName}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-700 whitespace-nowrap">
                     {student.mobileNo}
