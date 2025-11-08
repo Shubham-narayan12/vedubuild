@@ -32,34 +32,34 @@ export default function Navbar() {
 
   // Handle Student login
   const handleStudentLogin = async () => {
-    if (!formData.emailId || !formData.password) {
-      toast.error("Please enter email and password");
-      return;
-    }
-    try {
-      const response = await studentLogin({
-        emailId: formData.emailId,
-        password: formData.password,
-      });
-      login(response.data.token);
-      // localStorage.setItem("studentEmail", response.data.student.emailId);
-      localStorage.setItem("student", JSON.stringify(response.data.student));
-      console.log("Login successfully:", response);
-      toast.success("Login successfully!");
-      setIsLoginOpen(false); // modal close after login
-    } catch (error) {
-      console.error("Error in Login:", error);
-      toast.error("Failed to Login. Please try again.");
-    }
-  };
+  if (!formData.aplication_id || !formData.password) {
+    toast.error("Please enter Application Id and password");
+    return;
+  }
+  try {
+    const response = await studentLogin({
+      aplication_id: formData.aplication_id.trim(), 
+      password: formData.password.trim(), 
+    });
+    login(response.data.token);
+    // localStorage.setItem("studentEmail", response.data.student.emailId);
+    localStorage.setItem("student", JSON.stringify(response.data.student));
+    console.log("Login successfully:", response);
+    toast.success("Login successfully!");
+    setIsLoginOpen(false);
+  } catch (error) {
+    console.error("Error in Login:", error);
+    toast.error("Failed to Login. Please try again.");
+  }
+};
 
   const handleLogoClick = () => {
-    navigate("/"); // Home page pe navigate karega
-  };
+    navigate("/");
 
-  // TRANSLATION
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
+    // TRANSLATION
+    const changeLanguage = (lng) => {
+      i18n.changeLanguage(lng);
+    };
   };
 
   return (
@@ -247,21 +247,24 @@ export default function Navbar() {
               <form className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t("auth.email")}
+                    Application Id *
                   </label>
                   <input
-                    type="email"
-                    placeholder="your@email.com"
-                    value={formData.emailId}
+                    type="Application Id"
+                    placeholder="Application Id"
+                    value={formData.aplication_id}
                     onChange={(e) =>
-                      setFormData({ ...formData, emailId: e.target.value })
+                      setFormData({
+                        ...formData,
+                        aplication_id: e.target.value,
+                      })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#FF6B00]"
                   />
                 </div>
                 <div className="relative">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t("auth.password")}
+                    Password *
                   </label>
 
                   <input

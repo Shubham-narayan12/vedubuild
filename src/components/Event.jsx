@@ -1,5 +1,7 @@
 import React from 'react'
-import { Calendar, Clock, MapPin } from 'lucide-react'
+import { Calendar, Clock, MapPin, ArrowRight } from 'lucide-react'
+import { getAllEvents } from '../api/eventApi'
+import { useNavigate } from 'react-router-dom'
 
 export const Event = () => {
     const events = [
@@ -25,6 +27,7 @@ export const Event = () => {
             description: "Celebrating our scholarship recipients",
         },
     ]
+    const navigate = useNavigate();
 
     return (
         <section id="events" className="py-20 bg-[#f9f9f9]">
@@ -37,7 +40,7 @@ export const Event = () => {
                     </p>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-6 mb-12">
                     {events.map((event, index) => (
                         <div
                             key={index}
@@ -70,6 +73,14 @@ export const Event = () => {
                             </div>
                         </div>
                     ))}
+                </div>
+
+                {/* More Events Button */}
+                <div className="text-center">
+                    <button onClick={() => navigate("/events")} className="inline-flex items-center bg-[#3B3B3B] hover:bg-gray-800 text-white px-8 py-3 rounded-lg font-semibold transition duration-300">
+                        More Events
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                    </button>
                 </div>
             </div>
         </section>

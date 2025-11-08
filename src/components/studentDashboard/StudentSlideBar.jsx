@@ -72,13 +72,13 @@ export default function StudentScholarshipSidebar() {
   };
 
   const hanldeResetPasswordOtp = async () => {
-    if (!formData.emailId) {
-      toast.error("Please enter email");
+    if (!formData.aplication_id) {
+      toast.error("Please enter Application Id");
       return;
     }
     try {
       const response = await resetStudentPasswordOtp({
-        emailId: formData.emailId,
+        aplication_id: formData.aplication_id.trim(),
       });
       console.log("OTP SEND", response);
       toast.success("OTP Send successfully!");
@@ -94,16 +94,16 @@ export default function StudentScholarshipSidebar() {
       return;
     }
     // 👇 LocalStorage se emailId nikaal
-    const studentEmailId = JSON.parse(localStorage.getItem("student"));
-    const emailId = studentEmailId.emailId
+    const studentApplicationId = JSON.parse(localStorage.getItem("student"));
+    const Application_Id = studentApplicationId.application_id
 
-    if (!emailId) {
-      toast.error("No email found, please login again.");
+    if (!Application_Id) {
+      toast.error("No Application Id found, please login again.");
       return;
     }
     try {
       const response = await resetStudentPassword({
-        emailId, // 👈 yaha se jaa raha hai
+        aplication_id:Application_Id, // 👈 yaha se jaa raha hai
         otp: formData.otp,
         newPassword: formData.password,
       });
@@ -229,11 +229,11 @@ export default function StudentScholarshipSidebar() {
           <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg">
             <h2 className="text-lg font-semibold mb-4">Reset Password</h2>
             <input
-              type="email"
-              placeholder="Enter your email"
-              value={formData.emailId}
+              type="Application Id"
+              placeholder="Enter your Application Id"
+              value={formData.aplication_id}
               onChange={(e) =>
-                setFormData({ ...formData, emailId: e.target.value })
+                setFormData({ ...formData, aplication_id: e.target.value })
               }
               className="w-full border p-2 rounded mb-4"
             />

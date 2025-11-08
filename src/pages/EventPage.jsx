@@ -1,50 +1,132 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Calendar, Clock, MapPin, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getAllEvents } from "../api/eventApi";
 
 const EventPage = () => {
   const navigate = useNavigate();
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const events = [
-    {
-      title: "Scholarship Application Workshop",
-      date: "February 15, 2024",
-      time: "2:00 PM - 4:00 PM",
-      location: "Main Campus Auditorium",
-      description:
-        "Learn how to write compelling scholarship applications and increase your chances of securing educational funding. Our experts will guide you through the entire process.",
-    },
-    {
-      title: "Financial Aid Information Session",
-      date: "February 28, 2024",
-      time: "6:00 PM - 7:30 PM",
-      location: "Virtual Event",
-      description:
-        "Understanding financial aid options and requirements for various educational programs.",
-    },
-    {
-      title: "Scholarship Awards Ceremony",
-      date: "May 20, 2024",
-      time: "7:00 PM - 9:00 PM",
-      location: "Grand Ballroom",
-      description:
-        "Celebrating our scholarship recipients and their academic achievements.",
-    },
-  ];
+  // Date formatter function
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    
+    const date = new Date(dateString);
+    
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date';
+    }
+    
+    const options = { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };
+    
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  // Time formatter function
+  const formatTime = (timeString) => {
+    if (!timeString) return '';
+    
+    try {
+      const [hours, minutes] = timeString.split(':');
+      const hour = parseInt(hours);
+      const minute = parseInt(minutes);
+      
+      const period = hour >= 12 ? 'PM' : 'AM';
+      const formattedHour = hour % 12 || 12;
+      
+      return `${formattedHour}:${minute.toString().padStart(2, '0')} ${period}`;
+    } catch (error) {
+      return timeString;
+    }
+  };
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true);
+        const response = await getAllEvents();
+        
+        if (response.data.success) {
+          setEvents(response.data.events);
+        } else {
+          setError('Failed to fetch events');
+        }
+      } catch (err) {
+        console.error('Error fetching events:', err);
+        setError('Failed to load events. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#f9f9f9] py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#3B3B3B] mb-4">
+              Upcoming Events
+            </h1>
+            <div className="w-32 h-1 bg-lime-500 mx-auto rounded-full mb-4"></div>
+            <p className="text-xl text-[#3B3B3B] max-w-3xl mx-auto">
+              Loading events...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#f9f9f9] py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#3B3B3B] mb-4">
+              Upcoming Events
+            </h1>
+            <div className="w-32 h-1 bg-lime-500 mx-auto rounded-full mb-4"></div>
+            <p className="text-xl text-red-600 max-w-3xl mx-auto">
+              {error}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (events.length === 0) {
+    return (
+      <div className="min-h-screen bg-[#f9f9f9] py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-bold text-[#3B3B3B] mb-4">
+              Upcoming Events
+            </h1>
+            <div className="w-32 h-1 bg-lime-500 mx-auto rounded-full mb-4"></div>
+            <p className="text-xl text-[#3B3B3B] max-w-3xl mx-auto">
+              No upcoming events at the moment. Please check back later.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-[#f9f9f9] py-8">
+    <div className="min-h-screen bg-[#f9f9f9] py-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header with Back Button */}
         <div className="mb-8">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center text-[#FF6B00] hover:text-orange-600 font-medium mb-6 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Home
-          </button>
-
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold text-[#3B3B3B] mb-4">
               Upcoming Events
@@ -59,9 +141,9 @@ const EventPage = () => {
 
         {/* Events Grid */}
         <div className="space-y-6">
-          {events.map((event, index) => (
+          {events.map((event) => (
             <div
-              key={index}
+              key={event.id}
               className="bg-white rounded-xl shadow-md hover:shadow-lg transition duration-300 border border-gray-100"
             >
               <div className="p-6 md:flex md:items-center md:justify-between gap-6">
@@ -71,17 +153,19 @@ const EventPage = () => {
                     {event.title}
                   </h3>
 
-                  <p className="text-[#3B3B3B] mb-4">{event.description}</p>
+                  <p className="text-[#3B3B3B] mb-4">
+                    {event.description || "No description available."}
+                  </p>
 
                   {/* Event Info Icons */}
                   <div className="flex flex-wrap gap-4 text-sm text-[#3B3B3B]">
                     <div className="flex items-center">
                       <Calendar className="h-4 w-4 text-[#FF6B00] mr-2" />
-                      {event.date}
+                      {formatDate(event.date)}
                     </div>
                     <div className="flex items-center">
                       <Clock className="h-4 w-4 text-[#FF6B00] mr-2" />
-                      {event.time}
+                      {formatTime(event.time)}
                     </div>
                     <div className="flex items-center">
                       <MapPin className="h-4 w-4 text-[#FF6B00] mr-2" />

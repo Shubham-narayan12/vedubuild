@@ -8,7 +8,7 @@ export const scholarships = [
     subtitle:
       "Specially designed for school students studying in 5th to 10th standard",
     enrollmentFee: "₹399",
-    enrollmentPeriod: "1st August 2025 - 30th December 2025",
+    enrollmentPeriod: "1st November 2025 - 30th December 2025",
     examDate: "February 8, 2026",
     resultDate: "February 23, 2026",
     awardCeremony: "June 2026",
@@ -72,12 +72,12 @@ export const scholarships = [
 
   {
     id: "v-star",
-    logo: "/img/v-star.png",
+    logo: "/img/VSTAR logo.png",
     title: "V-STAR - Vedubuild Standard Test for Award & Rewards",
     subtitle:
       "India's first competitive exam for 12th/PUC students to obtain scholarships",
     enrollmentFee: "₹499",
-    enrollmentPeriod: "1st August 2025 - 30th December 2025",
+    enrollmentPeriod: "1st November 2025 - 30th December 2025",
     examDate: "February 1, 2026",
     resultDate: "February 23, 2026",
     awardCeremony: "June 2026",

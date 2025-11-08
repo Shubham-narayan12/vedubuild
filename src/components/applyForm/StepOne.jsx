@@ -111,7 +111,7 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
         {/* Student Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Student Name
+            Student Name *
           </label>
           <div className="relative">
             <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -136,7 +136,7 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
         {/* Father's Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Father's Name
+            Father's Name *
           </label>
           <div className="relative">
             <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -161,7 +161,7 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
         {/* Email and Mobile Number in same row */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Email Address
+            Email Address *
           </label>
           <div className="relative flex items-center">
             <Mail className="absolute left-3 h-5 w-5 text-gray-400 pointer-events-none" />
@@ -169,25 +169,27 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
               type="email"
               value={formData.emailId}
               onChange={(e) => handleInputChange("emailId", e.target.value)}
-              className={`flex-1 pl-10 pr-28 py-3 border rounded-lg focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent ${
+              className={`flex-1 pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent ${
                 errors.emailId ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="Enter email address"
             />
-            {showEmailVerified ? (
+            {showEmailVerified && (
               <div className="absolute right-3 flex items-center gap-1 text-green-600">
                 <CheckCircle className="h-5 w-5" />
                 <span className="text-sm font-medium">Verified</span>
               </div>
-            ) : (
+            )}
+            {/* Send OTP Button - Temporarily Hidden */}
+            {/* {!showEmailVerified && (
               <button
                 type="button"
                 onClick={handleSendEmailOtp}
                 className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 cursor-pointer bg-[#FF6B00] text-white text-sm rounded-lg hover:bg-orange-600"
               >
                 Send OTP
-              </button>
-            )}
+              </button> 
+            )} */}
           </div>
 
           {/* Email OTP */}
@@ -227,7 +229,7 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Mobile Number
+            Mobile Number *
           </label>
           <div className="space-y-3">
             <div className="relative flex items-center">
@@ -236,18 +238,20 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
                 type="tel"
                 value={formData.mobileNo}
                 onChange={(e) => handleInputChange("mobileNo", e.target.value)}
-                className={`flex-1 pl-10 pr-20 py-3 border rounded-lg focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent ${
+                className={`flex-1 pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#FF6B00] focus:border-transparent ${
                   errors.mobileNo ? "border-red-500" : "border-gray-300"
                 }`}
                 placeholder="Enter mobile number"
                 maxLength="10"
               />
-              {showPhoneVerified ? (
+              {showPhoneVerified && (
                 <div className="absolute right-3 flex items-center gap-1 text-green-600">
                   <CheckCircle className="h-5 w-5" />
                   <span className="text-sm font-medium">Verified</span>
                 </div>
-              ) : (
+              )}
+              {/* Send OTP Button - Temporarily Hidden */}
+              {/* {!showPhoneVerified && (
                 <button
                   type="button"
                   onClick={handleSendOtp}
@@ -255,7 +259,7 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
                 >
                   Send OTP
                 </button>
-              )}
+              )} */}
             </div>
 
             {/* Phone OTP */}
@@ -299,7 +303,7 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
         {/* Address */}
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Address
+            Address *
           </label>
           <div className="relative">
             <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -324,7 +328,7 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
         {/* City */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            City
+            City *
           </label>
           <div className="relative">
             <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
@@ -349,10 +353,10 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
         {/* State / District */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            District
+            District *
           </label>
           <div className="relative">
-            <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+            <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-300" />
             <input
               type="text"
               value={formData.district}
@@ -374,7 +378,7 @@ const StepOne = ({ formData, errors, handleInputChange }) => {
         {/* PIN Code */}
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            PIN Code
+            PIN Code *
           </label>
           <div className="relative">
             <MapPin className="absolute left-3 top-3 h-5 w-5 text-gray-400" />

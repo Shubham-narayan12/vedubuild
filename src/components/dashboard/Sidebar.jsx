@@ -7,7 +7,6 @@ import {
     Image,
     MessageSquare,
     GraduationCap,
-    Layout,
     ChevronDown,
     ChevronRight,
     BookOpen,
@@ -24,8 +23,6 @@ const SidebarIcon = ({ icon: Icon }) => <Icon size={20} />;
 
 export default function ScholarshipSidebar() {
     const [isExamManagementOpen, setIsExamManagementOpen] = useState(false);
-
-    // Mock location for demo - replace with actual useLocation in your app
     const navigate = useNavigate();
 
     const isActiveTab = (tab) => {
@@ -35,12 +32,10 @@ export default function ScholarshipSidebar() {
     const toggleExamManagement = () => {
         setIsExamManagementOpen(!isExamManagementOpen);
     };
+
     const handleLogout = async () => {
-
-
         try {
             const res = await logoutUser();
-
             if (res.status === 200) {
                 localStorage.removeItem("isLoggedIn");
                 toast.success("Logged out successfully");
@@ -54,11 +49,17 @@ export default function ScholarshipSidebar() {
         }
     };
 
-
     return (
-        <div className="w-full h-screen mt-6 md:w-50 lg:w-60 bg-white border-r border-gray-200 overflow-y-auto">
-            <div className="flex flex-col gap-2 p-2">
+        <div className="w-64 bg-white border-r border-gray-200 overflow-y-auto h-screen fixed left-0 top-0 z-50">
+            {/* Admin Header */}
+            <div className="p-4 border-b border-gray-200 bg-white">
+                <div className="text-xl font-bold text-gray-800 flex items-center">
+                    <span className="bg-green-600 text-white p-1 rounded mr-2">AD</span>
+                    <span>Admin</span>
+                </div>
+            </div>
 
+            <div className="flex flex-col gap-2 p-4">
                 <a href="/dashboard?tab=dash" className="block">
                     <div className={`flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group cursor-pointer ${isActiveTab("dash") ? "bg-green-200" : ""}`}>
                         <SidebarIcon icon={PieChart} />
@@ -87,8 +88,15 @@ export default function ScholarshipSidebar() {
                     </div>
                 </a>
 
+                <a href="/dashboard?tab=events" className="block">
+                    <div className={`flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group cursor-pointer ${isActiveTab("events") ? "bg-green-200" : ""}`}>
+                        <SidebarIcon icon={Calendar} />
+                        <span className="ml-3 text-sm font-medium">Event Management</span>
+                    </div>
+                </a>
+
                 {/* Exam Management Section */}
-                <div className="mt-4">
+                <div className="mt-2">
                     <div
                         onClick={toggleExamManagement}
                         className="flex items-center justify-between p-2 text-gray-700 rounded-lg hover:bg-gray-100 cursor-pointer group"
@@ -154,8 +162,6 @@ export default function ScholarshipSidebar() {
                     <SidebarIcon icon={LogOut} />
                     <span className="ml-3 text-sm font-medium">Sign Out</span>
                 </div>
-
-
             </div>
         </div>
     );

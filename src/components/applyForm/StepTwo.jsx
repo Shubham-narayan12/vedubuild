@@ -87,7 +87,7 @@ const StepTwo = ({ formData, errors, handleInputChange }) => {
         {/* Board Name Dropdown */}
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Board Name
+            Board Name *
           </label>
           <div className="relative">
             <BookOpen className="absolute left-3 top-3 h-5 w-5 text-gray-400" />

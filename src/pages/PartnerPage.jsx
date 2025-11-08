@@ -8,11 +8,6 @@ export default function PartnerPage() {
       website: "https://amma.org",
     },
     {
-      name: "Goutam Foundation",
-      logo: "/img/partners/goutamfoundationlogo.jpg",
-      website: "https://goutamfoundation.org",
-    },
-    {
       name: "Hirease",
       logo: "/img/partners/hireaselogo.jpg",
       website: "https://hirease.com",
@@ -20,12 +15,12 @@ export default function PartnerPage() {
     {
       name: "Kidzcloud",
       logo: "/img/partners/kidzcloud.png",
-      website: "https://kidzcloud.com",
+      website: "http://kidzcloud.in/",
     },
     {
       name: "Skill Root",
       logo: "/img/partners/skillrootlogopng.png",
-      website: "https://skillroot.com",
+      website: "www.Skillroot.co.in",
     },
     {
       name: "Vedubuild Trust",
