@@ -80,3 +80,7 @@ export const sendCredentials = (studentId)=>{
 export const updatePaymentStatus = (id)=>{
   return axiosInstance.post(`/vedubuildApply/update-payment-status/${id}`)
 }
+
+export const deleteStudent = (id)=>{
+  return axiosInstance.delete(`/vedubuildApply/${id}`)
+}

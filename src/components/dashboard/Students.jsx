@@ -4,7 +4,8 @@ import {
   applyBulk,
   getAllStudentData,
   updatePaymentStatus,
-  sendCredentials
+  sendCredentials,
+  deleteStudent
 } from "../../api/studentApi";
 
 // import { downloadStudentData, applyBulk } from "../../api/studentApi";
@@ -138,10 +139,45 @@ export default function StudentCardTable() {
     setShowPaymentModal(true);
   };
 
-  const confirmDelete = () => {
-    console.log("Delete student with ID:", studentIdToDelete);
-    setShowDeleteModal(false);
-  };
+const confirmDelete = async () => {
+    try {
+        console.log("Deleting student with ID:", studentIdToDelete);
+        
+        // API call for deletion
+        const response = await deleteStudent(studentIdToDelete);
+        
+        // Success case
+        if (response.status === 200 || response.success) {
+            toast.success("Student deleted successfully!");
+            
+            // ✅ YEH LINE ADD KARO - Students list update karo
+            setStudents(prevStudents => 
+                prevStudents.filter(student => student._id !== studentIdToDelete)
+            );
+            
+        } else {
+            toast.error("Failed to delete student. Please try again.");
+        }
+        
+    } catch (error) {
+        console.error("Error deleting student:", error);
+        
+        // Different error messages based on error type
+        if (error.response?.status === 404) {
+            toast.error("Student not found. It may have been already deleted.");
+        } else if (error.response?.status === 403) {
+            toast.error("You don't have permission to delete students.");
+        } else if (error.response?.status === 500) {
+            toast.error("Server error. Please try again later.");
+        } else {
+            toast.error("Failed to delete student. Please check your connection and try again.");
+        }
+    } finally {
+        // Always close modal
+        setShowDeleteModal(false);
+        setStudentIdToDelete(null); // Reset the ID
+    }
+};
 
   const handleFilterChange = (filterType, value) => {
     setFilters((prev) => ({

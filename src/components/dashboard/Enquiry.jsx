@@ -1,8 +1,7 @@
 import { Download } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import { getAllEnquiry,deleteEnquiry } from "../../api/enquiryApi";
-
+import { getAllEnquiry, deleteEnquiry } from "../../api/enquiryApi";
 
 export default function EnquiryTable() {
   const [enquiries, setEnquiries] = useState([]);
@@ -89,26 +88,45 @@ export default function EnquiryTable() {
   };
 
   const confirmDelete = async () => {
-   try {
-    // Delete request backend pe bhejna
-    await deleteEnquiry(enquiryIdToDelete); // ye api function banake import karna hoga
-    toast.success("Enquiry deleted successfully!");
+    try {
+      console.log("Deleting enquiry with ID:", enquiryIdToDelete);
 
-    // Local state se bhi remove kar do
-    setEnquiries((prev) =>
-      prev.filter((enq) => enq._id !== enquiryIdToDelete)
-    );
+      // Delete request backend pe bhejna
+      const response = await deleteEnquiry(enquiryIdToDelete);
 
-    setShowDeleteModal(false);
-    setEnquiryIdToDelete(null);
-  } catch (err) {
-    console.error(err);
-    toast.error("Failed to delete enquiry");
-  }
+      // Success case
+      if (response.status === 200 || response.success) {
+        toast.success(" Enquiry deleted successfully!");
+
+        // ✅ IMPORTANT: Local state se remove kar do
+        setEnquiries((prev) =>
+          prev.filter((enq) => enq._id !== enquiryIdToDelete)
+        );
+      } else {
+        toast.error("❌ Failed to delete enquiry");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+
+      // Specific error handling
+      if (err.response?.status === 404) {
+        toast.error("❌ Enquiry not found. It may have been already deleted.");
+      } else if (err.response?.status === 500) {
+        toast.error("❌ Server error. Please try again later.");
+      } else {
+        toast.error(
+          "❌ Failed to delete enquiry. Please check your connection."
+        );
+      }
+    } finally {
+      setShowDeleteModal(false);
+      setEnquiryIdToDelete(null);
+    }
   };
 
   const handleDeleteClick = (id, e) => {
     e.stopPropagation();
+    console.log("Deleting enquiry ID:", id);
     setEnquiryIdToDelete(id);
     setShowDeleteModal(true);
   };
@@ -235,14 +253,12 @@ export default function EnquiryTable() {
                   </div>
                 </td>
                 <td className="px-4 py-3 text-sm text-center whitespace-nowrap">
-                  
                   <button
                     onClick={(e) => handleDeleteClick(message._id, e)}
                     className="text-red-500 hover:text-red-700 hover:underline font-medium"
                   >
                     Delete
                   </button>
-    
                 </td>
               </tr>
             ))}
