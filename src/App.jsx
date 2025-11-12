@@ -21,6 +21,8 @@ import { Toaster } from "react-hot-toast";
 import StudentDashboard from "./pages/StudentDasboard";
 import PaymentPendingPage from "./components/applyForm/paymentPending";
 import EventPage from "./pages/EventPage";
+import BlogPage from "./pages/BlogPage";
+import BlogDetails from "./pages/BlogDetails";
 
 // Main App component
 function AppContent() {
@@ -49,6 +51,8 @@ function AppContent() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/scholarships" element={<ScholarshipPage />} />
+        <Route path="/blog" element={<BlogPage/>} />
+        <Route path="/blogdetails" element={<BlogDetails/>} />
         <Route path="/payment-pending" element={<PaymentPendingPage />} />
         <Route
           path="/scholarship/:id"

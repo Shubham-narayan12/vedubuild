@@ -70,7 +70,7 @@ export default function Navbar() {
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center space-x-4">
               <img
-                src="/img/partners/VRSDCLOGO.png"
+                src="/img/partners/VEDUBUILD LOGO.jpg"
                 alt="Vedubuild Logo"
                 className="h-14 w-auto object-contain cursor-pointer" // cursor-pointer add kiya
                 onClick={handleLogoClick} // Click handler add kiya
@@ -87,7 +87,7 @@ export default function Navbar() {
                 <option value="tel">TELGU</option>
                 <option value="ml">MALAYALAM</option>
                 <option value="tam">TAMIL</option>
-                <option value="kan">KANNADA</option>
+                <option value="kan">KANNAD</option>
               </select>
 
               <div className="text-gray-9000">

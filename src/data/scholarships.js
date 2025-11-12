@@ -39,17 +39,17 @@ export const scholarships = [
     ],
     category: "School Students",
     benefits: [
-      "All enrolled students will get free KIDZCLOUD subscription of 6 months.",
+      "Each enrolled students will recive a free KIDZCLOUD subscription of 6 months.",
       "All Participation students will receive Unique QR code Certification",
       "More than 30,000 students will get the reward money as per the rank",
-      "All enrolled students will receive one special information book",
+      "Every enrolled students will receives a Vedubuild Explorer book",
       "One to One mentoring with our Master Trainer and Teacher",
     ],
     additionBenifits: [
       "INTERNATIONAL EDUCATIONAL TOUR - for topest student in the state level",
       "VEDUBUILD BALIKA Award for 100 girl students from state.",
-      "Vedubuild organizing educational Expo",
-      "PLANT A TREE, PLANT A LIFE program to support green environment VEES give Plants",
+      "Vedubuild organizing Educational Expo.",
+      "PLANT A TREE, PLANT A LIFE program by VEES to support a green  enivornment by distributing plants.",
     ],
     termAndConditions: [
       "Participants shall be enrolled only for the current academic session, in the Class 5th to 10th ( State, CBSE, ICSE ) in pan India.",
@@ -117,12 +117,10 @@ export const scholarships = [
     category: "Higher Secondary",
     benefits: [
       "Ranked students will receive Scholarships for two years.",
-      "One day Education Camp",
       "One to One Mentoring with our Master Trainer and Teachers panel",
       "All participations will receive a unique QR code certification.",
-      "Free Training For Competitive Exams",
-      "Always  there to support under Nature Program and Skill Development Program",
-      "Free Placement Support",
+      "FREE-SKILL competitive preparation app Subscription for 6 months",
+      "Free Registration & 1year free subscription at HIREASE (Placement portal)",
     ],
     additionBenifits: [
       "INTERNATIONAL EDUCATIONAL TOUR - for topest student in the state level",

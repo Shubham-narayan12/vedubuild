@@ -82,6 +82,7 @@ export const Footer = () => {
                 <Mail size={20} />
               </a>
             </div>
+            
           </div>
 
           {/* Quick Links */}
@@ -102,10 +103,10 @@ export const Footer = () => {
               </li>
               <li>
                 <a
-                  href="/scholarships"
+                  href="/blog"
                   className="hover:text-amber-600 transition"
                 >
-                  {t("footer.quickLinks.scholarships")}
+                  Blogs
                 </a>
               </li>
               <li>
@@ -190,7 +191,7 @@ export const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-200 mt-10 pt-6 text-center text-gray-200 text-sm">
           <p>
-            &copy; 2024 Vedubuild. {t("footer.rights")}{" "}
+            &copy; 2025 Vedubuild. {t("footer.rights")}{" "}
             <a
               href="https://www.aadishrisoftech.com"
               className="text-white font-semibold hover:text-amber-600 transition"

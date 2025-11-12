@@ -7,6 +7,7 @@ import AdmitCard from "../components/studentDashboard/admitCard";
 import Certificate from "../components/studentDashboard/certificate";
 import ExamCalendar from "../components/studentDashboard/examCalender";
 import Result from "../components/studentDashboard/result";
+import Offer from "../components/studentDashboard/Offer";
 
 
 
@@ -34,6 +35,7 @@ export default function StudentDashboard() {
       {/* Main content - takes remaining space */}
       <div className="flex-1 p-4 overflow-auto">
         {tab === "prof" && <ProfileStats />}
+        {tab === "offer" && <Offer/>}
         {tab === "student-syllabus" && <StudentSyllabus />}
         {tab === "student-examCalender" &&<ExamCalendar/>}
         {tab === "student-admitCard" && <AdmitCard />}

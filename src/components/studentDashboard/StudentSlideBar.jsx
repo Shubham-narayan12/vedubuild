@@ -129,7 +129,7 @@ export default function StudentScholarshipSidebar() {
             <span className="ml-3 text-sm font-medium">Profile</span>
           </div>
         </a>
-
+        
         <a href="/student-dashboard?tab=student-syllabus" className="block">
           <div
             className={`flex items-center p-2 text-gray-700 rounded-lg hover:bg-gray-100 group cursor-pointer ${
